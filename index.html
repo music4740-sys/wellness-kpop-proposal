@@ -40,6 +40,17 @@ header p{margin:0;font-size:.85rem;color:var(--muted)}
 .thumbs button[aria-current="true"]{border-color:var(--accent)}
 .thumbs span{position:absolute;left:4px;bottom:3px;font-size:.7rem;background:rgba(0,0,0,.6);color:#fff;border-radius:3px;padding:0 4px;font-variant-numeric:tabular-nums}
 @media (prefers-reduced-motion:no-preference){.stage img{transition:opacity .15s}}
+
+/* 폰(화면 폭 760px 이하)에서는 슬라이드를 위아래로 쭉 이어서 보여 주고, 그보다 넓으면 한 장씩 넘겨 본다 */
+.scroll{display:none;flex-direction:column;gap:14px}
+.scroll figure{margin:0;position:relative;background:var(--stage);border-radius:8px;overflow:hidden;aspect-ratio:16/9}
+.scroll img{width:100%;height:100%;object-fit:contain;display:block}
+.scroll figcaption{position:absolute;right:6px;bottom:5px;font-size:.7rem;background:rgba(0,0,0,.6);color:#fff;border-radius:3px;padding:0 6px;font-variant-numeric:tabular-nums}
+@media (max-width:760px){
+  .stage,.nav,.thumbs{display:none}
+  .scroll{display:flex}
+  header{flex-direction:column}
+}
 </style>
 </head><body>
 
@@ -55,6 +66,7 @@ header p{margin:0;font-size:.85rem;color:var(--muted)}
     <button id="next" type="button">다음 →</button>
   </div>
   <div class="thumbs" id="thumbs"></div>
+  <div class="scroll" id="scroll"></div>
 </div>
 
 <script>
@@ -88,6 +100,15 @@ st.addEventListener("touchstart",function(e){sx=e.changedTouches[0].clientX;},{p
 st.addEventListener("touchend",function(e){ if(sx===null)return; var dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>40){go(dx<0?cur+1:cur-1);} sx=null;},{passive:true});
 st.addEventListener("click",function(e){ var r=st.getBoundingClientRect(); go((e.clientX-r.left)<r.width/2?cur-1:cur+1); });
 var h=parseInt((location.hash||"").slice(1),10); go(h>=1&&h<=N?h:1);
+
+var sc=document.getElementById("scroll");
+for(var j=1;j<=N;j++){
+  var f=document.createElement("figure"); f.id="p"+j;
+  f.innerHTML='<img loading="lazy" decoding="async" alt="'+j+'쪽 '+alts[j-1]+'" src="'+src(j)+'"><figcaption>'+j+' / '+N+'</figcaption>';
+  sc.appendChild(f);
+}
+var hh=parseInt((location.hash||"").slice(1),10);
+if(hh>=1&&hh<=N&&window.matchMedia("(max-width:760px)").matches){ setTimeout(function(){ var e=document.getElementById("p"+hh); if(e){e.scrollIntoView();} },50); }
 </script>
 
 </body></html>
