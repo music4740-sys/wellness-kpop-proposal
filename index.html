@@ -111,7 +111,7 @@ for(var j=1;j<=N;j++){
   f.innerHTML='<img loading="lazy" decoding="async" alt="'+j+'쪽 '+alts[j-1]+'" src="'+src(j)+'"><figcaption>'+j+' / '+N+'</figcaption>';
   sc.appendChild(f);
 }
-var hh=parseInt((location.hash||"").slice(1),10);
+var hh=h;   // 처음 주소에 #번호가 있을 때만 그 슬라이드로 이동(없으면 맨 위에서 시작)
 if(hh>=1&&hh<=N&&window.matchMedia("(max-width:760px)").matches){ setTimeout(function(){ var e=document.getElementById("p"+hh); if(e){e.scrollIntoView();} },50); }
 </script>
 
